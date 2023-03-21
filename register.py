@@ -2,8 +2,7 @@ from flask import Flask, jsonify, request
 import client_registers
 import shopName_registers
 from flask_sqlalchemy import SQLAlchemy
-from database_structure import Final_Client, Id_Telegram, Service_Shop, app, db 
-from service_shop_database import Services
+from database_structure import Final_Client, Service_Shop, app, db
 
 # Creating route to Final Client
 # Actions (verbs) to Final Client Register
@@ -64,7 +63,7 @@ def delete_client(telegram_number):
 # Actions (verbs) to Service Shop Register
 @app.route('/shopName_registers')
 def get_serviceShop():
-    services = Services.query.all()
+    services = Service_Shop.query.all()
     services_list = []
     for service in services:
         service_current = {}
