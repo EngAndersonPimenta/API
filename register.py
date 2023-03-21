@@ -1,12 +1,15 @@
 from flask import Flask, jsonify, request
-import registers_data
+import client_registers
+import shopName_registers
 from flask_sqlalchemy import SQLAlchemy
-from database_structure import Register, Id_Telegram, app, db 
+from database_structure import Final_Client, Id_Telegram, Service_Shop, app, db 
+from service_shop_database import Services
 
-# Actions (verbs) to client register
-@app.router('/register')
+# Creating route to Final Client
+# Actions (verbs) to Final Client Register
+@app.router('/client_registers')
 def get_register():
-    registers = Register.query.all()
+    registers = Final_Client.query.all()
     register_list = []
     for register in registers:
         register_current = {}
@@ -17,49 +20,170 @@ def get_register():
         register_list.append(register_current)
     return jsonify({'registers': register_list})
 
-@app.route('/registers_data', methods=['POST'])
+@app.route('/client_registers', methods=['POST'])
 def create_client(name, email, telegram_number, telegram_id):
     data = request.get_json()
-    registers_data.append(data)
+    client_registers.append(data)
     return jsonify({'Message': 'User created successfully.'})
 
 
-@app.route('/registers_data/<int:telegram_id>', methods=['GET'])
+@app.route('/client_registers/<int:telegram_id>', methods=['GET'])
 def get_client(telegram_id):
-    return jsonify(registers_data[telegram_id])
+    return jsonify(client_registers[telegram_id])
 
 
-@app.route('/registers_data/<int:telegram_number>', methods=['PUT'])
-def change_telegram_number(name, email, telegram_number):
+@app.route('/client_registers/<int:telegram_number>', methods=['PUT'])
+def update_telegramNumber(name, email, telegram_number):
     result = request.get_json
-    registers_data[telegram_number].update(result)
-    return jsonify(registers_data[telegram_number]), 200
+    client_registers[telegram_number].update(result)
+    return jsonify(client_registers[telegram_number]), 200
 
 
-@app.route('/registers_data/<name>', methods=['PUT'])
-def change_name(name, email, telegram_number):
+@app.route('/client_registers/<name>', methods=['PUT'])
+def update_name(name, email, telegram_number):
     result = request.get_json
-    registers_data[name].update(result)
-    return jsonify(registers_data[name]), 200
+    client_registers[name].update(result)
+    return jsonify(client_registers[name]), 200
 
 
-@app.route('/registers_data/<email>', methods=['PUT'])
-def change_email(name, email, telegram_number):
+@app.route('/client_registers/<email>', methods=['PUT'])
+def update_email(name, email, telegram_number):
     result = request.get_json
-    registers_data[email].update(result)
-    return jsonify(registers_data[email]), 200
+    client_registers[email].update(result)
+    return jsonify(client_registers[email]), 200
 
 
-@app.route('/registers_data/<int:telegram_number>', methods=['DELETE'])
+@app.route('/client_registers/<int:telegram_number>', methods=['DELETE'])
 def delete_client(telegram_number):
-    client = registers_data[telegram_number]
-    del registers_data[telegram_number]
+    client = client_registers[telegram_number]
+    del client_registers[telegram_number]
     return jsonify({'Message': 'User deleted successfully.'})
 
+#===============================================================
+# Creating route to Service Shop
+# Actions (verbs) to Service Shop Register
+@app.route('/shopName_registers')
+def get_serviceShop():
+    services = Services.query.all()
+    services_list = []
+    for service in services:
+        service_current = {}
+        service_current['shop_name'] = service.shop_name
+        service_current['email'] = service.email
+        service_current['phone'] = service.phone
+        service_current['telegram_number'] = service.telegram_number
+        service_current['address'] = service.address
+        service_current['service_name'] = service.service_name
+        service_current['service_description'] = service.service_description
+        service_current['service_price'] = service.service_price
+        service_current['professional'] = service.professional
 
-# Criar rota para professional register
+# POST
+@app.route('/shopName_registers', methods=['POST'])
+def create_serviceShop(shop_name, email, phone, telegram_number, address, service_name, service_description, service_price, professional):
+    data = request.get_json()
+    shopName_registers.append(data)
+    return jsonify({'Message': 'Service Shop created successfully.'})
 
-# Criar rota para Service Shop register
+# GET
+@app.route('/shopName_registers/<shop_name>', methods=['GET'])
+def get_shopName(shop_name):
+    return jsonify(client_registers[shop_name])
+
+@app.route('/shopName_registers/<email>', methods=['GET'])
+def get_email(email):
+    return jsonify(client_registers[email])
+
+@app.route('/shopName_registers/<int:phone>', methods=['GET'])
+def get_phone(phone):
+    return jsonify(client_registers[phone])
+
+@app.route('/shopName_registers/<int:telegram_number>', methods=['GET'])
+def get_telegramNumber(telegram_number):
+    return jsonify(client_registers[telegram_number])
+
+@app.route('/shopName_registers/<address>', methods=['GET'])
+def get_address(address):
+    return jsonify(client_registers[address])
+
+@app.route('/shopName_registers/<service_name>', methods=['GET'])
+def get_serviceName(service_name):
+    return jsonify(client_registers[service_name])
+
+@app.route('/shopName_registers/<service_description>', methods=['GET'])
+def get_serviceDescription(service_description):
+    return jsonify(client_registers[service_description])
+
+@app.route('/shopName_registers/<int:service_price>', methods=['GET'])
+def get_servicePrice(service_price):
+    return jsonify(client_registers[service_price])
+
+@app.route('/shopName_registers/<professional>', methods=['GET'])
+def get_professional(professional):
+    return jsonify(client_registers[professional])
+
+#PUT
+@app.route('/shopName_registers/<shop_name>', methods=['PUT'])
+def update_shopName(shop_name, email, phone, telegram_number, address, service_name, service_description, service_price, professional):
+    result = request.get_json()
+    shopName_registers[shop_name].update(result)
+    return jsonify({'Message': 'Shop Name updated successfully.'}), 200
+
+@app.route('/shopName_registers/<email>', methods=['PUT'])
+def update_email(shop_name, email, phone, telegram_number, address, service_name, service_description, service_price, professional):
+    result = request.get_json
+    shopName_registers[email].update(result)
+    return jsonify({'Message': 'Email updated successfully.'}), 200
+
+@app.route('/shopName_registers/<int:phone>', methods=['PUT'])
+def update_phone(shop_name, email, phone, telegram_number, address, service_name, service_description, service_price, professional):
+    result = request.get_json
+    shopName_registers[phone].update(result)
+    return jsonify({'Message': 'Phone updated successfully.'}), 200
+
+@app.route('/shopName_registers/<int:telegram_number>', methods=['PUT'])
+def update_telegramNumber(shop_name, email, phone, telegram_number, address, service_name, service_description, service_price, professional):
+    result = request.get_json
+    shopName_registers[telegram_number].update(result)
+    return jsonify({'Message': 'Telegram Number updated successfully.'}), 200
+
+@app.route('/shopName_registers/<address>', methods=['PUT'])
+def update_address(shop_name, email, phone, telegram_number, address, service_name, service_description, service_price, professional):
+    result = request.get_json
+    shopName_registers[address].update(result)
+    return jsonify({'Message': 'Address updated successfully.'}), 200
+
+@app.route('/shopName_registers/<service_name>', methods=['PUT'])
+def update_serviceName(shop_name, email, phone, telegram_number, address, service_name, service_description, service_price, professional):
+    result = request.get_json
+    shopName_registers[service_name].update(result)
+    return jsonify({'Message': 'Service Name updated successfully.'}), 200
+
+@app.route('/shopName_registers/<service_description>', methods=['PUT'])
+def update_serviceDescription(shop_name, email, phone, telegram_number, address, service_name, service_description, service_price, professional):
+    result = request.get_json
+    shopName_registers[service_description].update(result)
+    return jsonify({'Message': 'Service Description updated successfully.'}), 200
+
+@app.route('/shopName_registers/<int:service_price>', methods=['PUT'])
+def update_servicePrice(shop_name, email, phone, telegram_number, address, service_name, service_description, service_price, professional):
+    result = request.get_json
+    shopName_registers[service_price].update(result)
+    return jsonify({'Message': 'Service Price updated successfully.'}), 200
+
+@app.route('/shopName_registers/<professional>', methods=['PUT'])
+def update_professional(shop_name, email, phone, telegram_number, address, service_name, service_description, service_price, professional):
+    result = request.get_json
+    shopName_registers[professional].update(result)
+    return jsonify({'Message': 'Professional updated successfully.'}), 200
+
+# DELETE
+@app.route('/shopName_registers/<int:telegram_number>', methods=['DELETE'])
+def delete_serviceShop(telegram_number):
+    serviceShop = client_registers[telegram_number]
+    del shopName_registers[telegram_number]
+    return jsonify({'Message': 'Service Shop deleted successfully.'})
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
+    
